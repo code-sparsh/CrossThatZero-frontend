@@ -7,7 +7,6 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Room from './pages/Room'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <div className="h-full">
