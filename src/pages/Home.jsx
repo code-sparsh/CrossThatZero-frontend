@@ -10,7 +10,7 @@ const Home = () => {
     return <div className="h-full bg-[#161c22] flex justify-center">
 
         <div className="flex flex-col items-center mt-36 gap-32 md:gap-64">
-            <div className="title text-center mt-7 text-[#24a35a] text-7xl font-bold text-6xls font-title">
+            <div className="title text-center mt-7 text-[#24a35a] text-7xl font-bold text-6xls font-title animate-bounce">
                 Cross That Zero
             </div>
 
