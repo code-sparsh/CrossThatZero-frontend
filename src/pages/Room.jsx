@@ -66,14 +66,15 @@ const Room = () => {
         let count = -1;
         const interval = setInterval(() => {
             count++;
-            if (count >= 200 && !isLoading) {
-                clearInterval(interval);
+            console.log(count);
+            if (count >= 200 && isLoading) {
                 alert.error("Couldn't find an opponent. Please come back later.");
 
                 if (newSocket)
                     newSocket.disconnect();
 
                 navigate("/");
+                clearInterval(interval);
             } else {
                 setLoadingArray((prevArray) => {
                     const newArray = [...prevArray];
@@ -95,11 +96,17 @@ const Room = () => {
         setRoomDetails({ ...roomDetails, board: board });
         console.log(roomDetails)
 
-        const socket = io("http://localhost:9000", {
+        const socket = io(import.meta.env.VITE_SOCKET_SERVER_URL, {
             reconnection: false,
             query: `userID=${userID}`,
             transports: ['websocket'],
         });
+
+        // const socket = io("http://localhost:9000", {
+        //     reconnection: false,
+        //     query: `userID=${userID}`,
+        //     transports: ['websocket'],
+        // });
 
         setNewSocket(socket);
 
@@ -107,12 +114,12 @@ const Room = () => {
             console.log(room);
             // setIsMyTurn(!isMyTurn);
 
-            if(isMyTurn == false) {
+            if (isMyTurn == false) {
                 // setIsMyTurn(true); 
                 // console.log("changing the turn - " + isMyTurn);
             }
 
-            else if(isMyTurn == true) {
+            else if (isMyTurn == true) {
                 // setIsMyTurn(false);
                 // console.log("changing the turn - " + isMyTurn);
             }
@@ -133,7 +140,7 @@ const Room = () => {
                     alert.show("It's your turn")
                 }
 
-                if (room.crossPlayer == userID){
+                if (room.crossPlayer == userID) {
                     setMyPlayerType('X')
                     setIsMyTurn(false);
                     console.log("idhar change nhi karne ka baar baar - " + isMyTurn);
@@ -166,6 +173,7 @@ const Room = () => {
 
             handleOpenPopup();
             setWinner(w.winner);
+            socket.disconnect();
         })
 
 
@@ -180,32 +188,44 @@ const Room = () => {
     useEffect(() => {
 
         setIsMyTurn(!isMyTurn);
-    },[board])
+    }, [board])
 
 
     return (<div className="h-full bg-[#161c22]">
 
-        <div className="flex flex-col items-center pt-32 lg:pt-10">
+        <div className="flex flex-col items-center pt-2 lg:pt-10">
             <div className="title text-center mt-7 text-[#24a35a] text-5xl md:text-8xl font-bold font-title">
                 Cross That Zero
             </div>
 
             {!isLoading ?
-                <div className="mt-20 flex gap-x-36">
-                    <div className="flex flex-col gap-y-10 text-center">
-                        <img src={profilePhoto} height="300" width="200" className="rounded-full" ></img>
-                        <div className=" text-blue-900 text-3xl">Sparsh Sethi</div>
-                        {isMyTurn? <div className=" text-green-800 text-6xl animate-pulse">{"->"}</div>: null}
+                <div className="mt-20 mx-4 flex-col md:flex-row md:flex gap-x-14 lg:gap-x-36">
+                    <div className="gap-y-10 flex justify-between">
+                        <div className="hidden md:flex flex-col gap-y-10 text-center mt-10 ">
+                            <img src={profilePhoto} height="300" width="200" className="rounded-full" ></img>
+                            <div className=" text-blue-900 text-3xl">John</div>
+                            {(isMyTurn) ? <div className=" text-green-800 text-6xl animate-pulse">{"Turn"}</div> : null}
+                        </div>
+                        <div className="md:hidden flex flex-col text-center items-center">
+                            <img src={profilePhoto} height="100" width="70" className={(isMyTurn)? "rounded-full border-4 border-green-800 animate-pulse" : "rounded-full border-4 border-black"}></img>
+                            <div className=" text-blue-900 text-lg">John</div>
+                            {/* {isMyTurn ? <div className=" text-green-800 text-4xl animate-pulse">{"->"}</div> : null} */}
+                        </div>
+                        <div className="md:hidden flex flex-col text-center items-center">
+                        <img src={profilePhoto} height="100" width="70" className={(!isMyTurn)? "rounded-full border-4 border-green-800 animate-pulse" : "rounded-full border-4 border-black"}></img>
+                            <div className=" text-blue-900 text-lg">Sparsh Sethi</div>
+                            {/* {!isMyTurn ? <div className=" text-green-800 text-4xl animate-pulse">{"<-"}</div> : null} */}
+                        </div>
                     </div>
-                    <div className="grid grid-rows-3 grid-cols-3 rounded-xl">
+                    <div className="grid grid-rows-3 grid-cols-3 rounded-xl mt-4">
                         {board && board.map((b, index) => (
-                            <div onClick={() => handleBoardClick(index)} className="border border-double rounded-sm hover:border-green-800 border-green-300  hover:bg-blue-900 active:bg-blue-900 bg-[#493c75] text-6xl p-10 lg:py-16 lg:px-20 text-white cursor-pointer">{b}</div>
+                            <div onClick={() => handleBoardClick(index)} className="border border-double rounded-sm hover:border-green-800 border-green-300  hover:bg-blue-900 active:bg-blue-900 bg-[#493c75] text-4xl md:text-6xl p-10 lg:py-16 lg:px-20 text-white cursor-pointer">{b}</div>
                         ))}
                     </div>
-                    <div className="flex flex-col gap-y-10 text-center ">
+                    <div className="hidden md:flex flex-col gap-y-10 text-center mt-10">
                         <img src={profilePhoto} height="300" width="200" className="rounded-full" ></img>
                         <div className=" text-blue-900 text-3xl">Sparsh Sethi</div>
-                        {(!isMyTurn)? <div className=" text-green-800 text-6xl animate-pulse">{"<-"}</div>: null}
+                        {(!isMyTurn) ? <div className=" text-green-800 text-6xl animate-pulse">{"Turn"}</div> : null}
                     </div>
                 </div>
                 :
