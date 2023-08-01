@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAlert } from "react-alert";
 import { useNavigate } from "react-router-dom";
-import * as io from "socket.io-client";
+import io from "socket.io-client";
 import Popup from "../components/Popup";
 
 import profilePhoto from '../assets/profilePhoto.png'
@@ -65,8 +65,7 @@ const Room = () => {
     useEffect(() => {
         let count = -1;
         const interval = setInterval(() => {
-            count++;
-            console.log(count);
+            count++;   
             if (count >= 200 && isLoading) {
                 alert.error("Couldn't find an opponent. Please come back later.");
 
@@ -94,8 +93,7 @@ const Room = () => {
     useEffect(() => {
 
         setRoomDetails({ ...roomDetails, board: board });
-        console.log(roomDetails)
-
+        
         const socket = io(import.meta.env.VITE_SOCKET_SERVER_URL, {
             reconnection: false,
             query: `userID=${userID}`,
