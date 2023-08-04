@@ -66,14 +66,14 @@ const Room = () => {
         let count = -1;
         const interval = setInterval(() => {
             count++;   
-            if (count >= 200 && isLoading) {
+            if (count >= 200 && !isLoading) {
+                clearInterval(interval);
                 alert.error("Couldn't find an opponent. Please come back later.");
 
                 if (newSocket)
                     newSocket.disconnect();
 
                 navigate("/");
-                clearInterval(interval);
             } else {
                 setLoadingArray((prevArray) => {
                     const newArray = [...prevArray];
@@ -90,7 +90,8 @@ const Room = () => {
         }, 100);
     }, [])
 
-    useEffect(() => {
+
+    useEffect(() => { 
 
         setRoomDetails({ ...roomDetails, board: board });
         
@@ -100,12 +101,13 @@ const Room = () => {
             transports: ['websocket'],
         });
 
-        // const socket = io("http://localhost:9000", {
+        // const socket = io("http://localhost:9000/", {
         //     reconnection: false,
         //     query: `userID=${userID}`,
-        //     transports: ['websocket'],
+        //     rejectUnauthorized: false,
         // });
 
+        
         setNewSocket(socket);
 
         socket.on("room", (room) => {
