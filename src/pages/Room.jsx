@@ -44,7 +44,6 @@ const Room = () => {
 
         if (!isMyTurn) {
             alert.error("Its not your turn");
-            console.log("its not this guys turn")
             return;
         }
         // let updatedBoard = [...board];
@@ -54,7 +53,7 @@ const Room = () => {
 
         // setIsMyTurn(!isMyTurn);
 
-        newSocket.emit("playerMove", { move: index });
+        newSocket.emit("playerMove", { move: index, playerType: myPlayerType});
     }
 
     const handleQuitButton = () => {
@@ -97,7 +96,7 @@ const Room = () => {
         
         const socket = io(import.meta.env.VITE_SOCKET_SERVER_URL, {
             reconnection: false,
-            query: `userID=${userID}`,
+            query: `username=${userID}`,
             transports: ['websocket'],
         });
 
@@ -134,16 +133,14 @@ const Room = () => {
                 setBoard(room.board.split(""));
 
                 if (room.zeroPlayer == userID) {
-                    setMyPlayerType('0')
+                    setMyPlayerType('ZERO')
                     setIsMyTurn(true);
-                    console.log("idhar change nhi karne ka baar baar - " + isMyTurn);
                     alert.show("It's your turn")
                 }
 
                 if (room.crossPlayer == userID) {
-                    setMyPlayerType('X')
+                    setMyPlayerType('CROSS')
                     setIsMyTurn(false);
-                    console.log("idhar change nhi karne ka baar baar - " + isMyTurn);
                 }
                 setIsLoading(false);
                 isGameStarted = true;
@@ -156,16 +153,19 @@ const Room = () => {
                 setBoard(room.board.split(""));
                 // setIsMyTurn(!isMyTurn);
                 // console.log("Changing the turn - " + isMyTurn);
-                console.log("idhar kyu nhi aa raha");
+            }
+
+            return () => {
+                socket.disconnect();
             }
         })
 
         socket.on("winner", (w) => {
-            if (w.winner == "CROSS" && myPlayerType == 'X') {
+            if (w.winner == "CROSS" && myPlayerType == 'CROSS') {
                 alert.success("Congratulations! You won");
             }
 
-            if (w.winner == "ZERO" && myPlayerType == '0') {
+            if (w.winner == "ZERO" && myPlayerType == 'ZERO') {
                 alert.success("Congratulations! You won");
             }
 
@@ -173,15 +173,14 @@ const Room = () => {
 
             handleOpenPopup();
             setWinner(w.winner);
-            socket.disconnect();
         })
 
+        socket.on("disconnect", () => {
+            console.log("diconnect ho gya")
+            alert.error("Disconnected");
+            navigate("/");
+        }) 
 
-
-
-        return () => {
-            socket.disconnect();
-        }
     }, [])
 
 

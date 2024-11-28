@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "VITE_SERVER_URL=localhost:8080 VITE_SOCKET_SERVER_URL=localhost:9000 vite",
-    "prod": "VITE_SERVER_URL=3.129.125.64:8080 VITE_SOCKET_SERVER_URL=routinely-communal-scorpion.ngrok-free.app vite",
-    "build": "VITE_SOCKET_SERVER_URL=routinely-communal-scorpion.ngrok-free.app vite build",
+    "prod": "vite",
+    "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

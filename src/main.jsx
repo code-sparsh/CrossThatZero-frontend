@@ -11,9 +11,7 @@ const options = {
 };
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
     <Provider template={AlertTemplate} {...options}>
       <App />
     </Provider>
-  </React.StrictMode>,
 )
